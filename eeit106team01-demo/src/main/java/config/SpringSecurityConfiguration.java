@@ -1,5 +1,6 @@
 package config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,10 +10,15 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import model.service.DemoUserDetailsService;
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
+	@Autowired
+	DemoUserDetailsService demoUserDetailsService;
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -20,29 +26,19 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(null);
-//		auth.inMemoryAuthentication()
-//		.withUser("albert").password(passwordEncoder().encode("albert")).roles("guest")
-//		.and()
-//		.withUser("naomi").password(passwordEncoder().encode("naomi")).roles("guest");
-//		;
+		auth.userDetailsService(demoUserDetailsService).passwordEncoder(passwordEncoder());
 	}
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+//		super.configure(http);
 		http
-		.authorizeRequests()
-		.antMatchers("/secure").hasAnyRole("guest")
-		.antMatchers("/**").permitAll()
-		.and()
-		.formLogin()
-		.failureForwardUrl("/login")
-		.and()
-		.logout()
-		.deleteCookies("SESSIONID")
-		.and()
-		.csrf()
-		.disable()
-		;
+        .authorizeRequests()
+            .antMatchers("/secure").hasAuthority("guest")
+            .anyRequest().authenticated()
+            .and()
+        .formLogin()
+            .and()
+        .httpBasic();
 	}
 }

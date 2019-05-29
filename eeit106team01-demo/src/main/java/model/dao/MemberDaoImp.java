@@ -1,5 +1,7 @@
 package model.dao;
 
+import java.util.Collection;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,54 @@ import model.entity.Member;
 
 @Repository
 public class MemberDaoImp implements MemberDao {
+
+	@Override
+	public Member getById(Long id) {
+		return getSession().get(Member.class, id);
+	}
+
+	@Override
+	public Collection<Member> findByBean(Member bean) {
+		
+		
+		return null;
+	}
+
+
+	@Override
+	public Member findAnUnique(Member bean) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean deleteById(Long id) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean deleteByIdList(Collection<Long> ids) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean insertMany(Collection<Member> beans) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Member updateNotNull(Member bean) {
+		return null;
+	}
+
+
+	@Override
+	public Member saveIgnoreId(Member bean) {
+		return null;
+	}
 
 	@Autowired
 	SessionFactory factory;
